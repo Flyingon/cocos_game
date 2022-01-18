@@ -1,6 +1,23 @@
 {
 	"game": {
-		"name": "未知游戏",
-		"appid": "UNKNOW"
-	}
+		"name": "play_together",
+		"appid": "676451191",
+		"cid": "0"
+	},
+	"configs": [
+		{
+			"appid": "676451191",
+			"services": [
+				{
+					"service_id": "270",
+					"enable": false
+				},
+				{
+					"service_id": "242",
+					"enable": false
+				}
+			]
+		}
+	],
+	"needExecNative": true
 }

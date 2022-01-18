@@ -1,5 +1,5 @@
 {
-  "start-scene": "current",
+  "start-scene": "940a6f87-0109-4de9-9c78-eb79c2121550",
   "group-list": [
     "default"
   ],
@@ -8,8 +8,13 @@
       true
     ]
   ],
-  "excluded-modules": [],
-  "last-module-event-record-time": 0,
+  "excluded-modules": [
+    "3D Physics/cannon.js",
+    "3D Physics/Builtin",
+    "3D Particle",
+    "SafeArea"
+  ],
+  "last-module-event-record-time": 1642499071239,
   "design-resolution-width": 960,
   "design-resolution-height": 640,
   "fit-width": false,
@@ -31,5 +36,8 @@
     "audience": {
       "enable": false
     }
-  }
+  },
+  "migrate-history": [
+    "cloud-function"
+  ]
 }
