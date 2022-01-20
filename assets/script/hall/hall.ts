@@ -1,31 +1,41 @@
-// Learn TypeScript:
-//  - [Chinese] https://docs.cocos.com/creator/manual/zh/scripting/typescript.html
-//  - [English] http://www.cocos2d-x.org/docs/creator/manual/en/scripting/typescript.html
-// Learn Attribute:
-//  - [Chinese] https://docs.cocos.com/creator/manual/zh/scripting/reference/attributes.html
-//  - [English] http://www.cocos2d-x.org/docs/creator/manual/en/scripting/reference/attributes.html
-// Learn life-cycle callbacks:
-//  - [Chinese] https://docs.cocos.com/creator/manual/zh/scripting/life-cycle-callbacks.html
-//  - [English] http://www.cocos2d-x.org/docs/creator/manual/en/scripting/life-cycle-callbacks.html
+import { SetUserInfo, GetUserInfo } from "../util/user/userinfo";
 
 const {ccclass, property} = cc._decorator;
 
 @ccclass
 export default class NewClass extends cc.Component {
 
-    @property(cc.Label)
-    label: cc.Label = null;
-
-    @property
-    text: string = 'hello';
+    @property(cc.Node)
+    UserInfo: cc.Node = null;
 
     // LIFE-CYCLE CALLBACKS:
 
-    // onLoad () {}
+    onLoad () {
+        this._showUserInfo();
+    }
 
     start () {
-
     }
 
     // update (dt) {}
+
+    _showUserInfo() {
+        let userInfo = GetUserInfo();
+        console.log("show userinfo: ", userInfo);
+        let name = userInfo.get("name");
+        let avatarUrl = userInfo.get("avatar");
+    
+        this.UserInfo.getChildByName("Name").getComponent(cc.Label).string = name;
+        if (avatarUrl.length > 0) {
+            var self = this;
+            cc.assetManager.loadRemote(avatarUrl, { ext: '.png' }, function (err, texture) {
+                if (err) {
+                    console.error(err);
+                    return;
+                }
+                let sf = new cc.SpriteFrame(texture);
+                self.UserInfo.getChildByName("Avatar").getComponent(cc.Sprite).spriteFrame = sf;
+            });
+        }
+    }
 }
