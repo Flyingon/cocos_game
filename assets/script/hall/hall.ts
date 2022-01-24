@@ -8,10 +8,9 @@ export default class NewClass extends cc.Component {
     @property(cc.Node)
     UserInfo: cc.Node = null;
 
-    // LIFE-CYCLE CALLBACKS:
-
     onLoad () {
         this._showUserInfo();
+
     }
 
     start () {
@@ -37,5 +36,9 @@ export default class NewClass extends cc.Component {
                 self.UserInfo.getChildByName("Avatar").getComponent(cc.Sprite).spriteFrame = sf;
             });
         }
+    }
+
+    EnterTankGame() {
+        cc.director.loadScene('scene/tank');
     }
 }

@@ -296,7 +296,7 @@
       "x": 0,
       "y": 0
     },
-    "isDebug": true,
+    "isDebug": false,
     "_id": "9efK6oMphOwLGifghW9JY4"
   },
   {
@@ -416,7 +416,7 @@
       "__id__": 8
     },
     "_enabled": true,
-    "_type": 2,
+    "_type": 0,
     "_allowSleep": true,
     "_gravityScale": 1,
     "_linearDamping": 0,
@@ -660,7 +660,7 @@
     },
     "_angularVelocity": 0,
     "_fixedRotation": true,
-    "enabledContactListener": false,
+    "enabledContactListener": true,
     "bullet": false,
     "awakeOnLoad": true,
     "_id": "92IPV5fP9L/ZD/yk2IPTr9"
@@ -763,8 +763,8 @@
       "__type__": "TypedArray",
       "ctor": "Float64Array",
       "array": [
-        -501.475,
-        -214.393,
+        -444.689,
+        -177.324,
         0,
         0,
         0,
