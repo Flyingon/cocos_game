@@ -10,13 +10,10 @@ export default class NewClass extends cc.Component {
 
     onLoad () {
         this._showUserInfo();
-
     }
 
     start () {
     }
-
-    // update (dt) {}
 
     _showUserInfo() {
         let userInfo = GetUserInfo();
