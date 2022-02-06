@@ -1,0 +1,27 @@
+syntax = "proto3";
+
+package game;
+option go_package = "./game";
+
+message HeadReq {
+    uint64 uid = 1;
+    int64 cmd = 2;
+    string s_id = 3; //服务id
+    string i_id = 4; //实例id
+}
+
+message MsgReq {
+    HeadReq head = 1;
+    bytes data = 2;
+}
+
+message HeadRsp {
+    uint64 uid = 1;
+    int64 cmd = 2;
+    int64 code = 4;
+}
+
+message MsgRsp {
+    HeadRsp head = 1;
+    bytes data = 2;
+}
