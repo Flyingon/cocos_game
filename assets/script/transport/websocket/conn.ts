@@ -1,8 +1,9 @@
 
 import { getHandler } from "./handler";
+// import protobuf from "../../proto/protobuf_all";
 
-const heartPing = "ping_xytl"
-const heartPong = "pong_xytl"
+const heartPing = "ping"
+const heartPong = "pong"
 
 
 class CWsConn {
@@ -13,17 +14,30 @@ class CWsConn {
         return this._webSocket
     }
 
-    NewConn(url: string, data: any) {
+    NewConn(url: string) {
+        protobuf.load("game.proto", function (err, root) {
+            if (err)
+                throw err;
+
+            // example code
+            const MsgReq = root.lookupType("game.MsgReq");
+
+            let message = MsgReq.create({ data: "hello" });
+            console.log(`message = ${JSON.stringify(message)}`);
+
+            let buffer = MsgReq.encode(message).finish();
+            console.log(`buffer = ${Array.prototype.toString.call(buffer)}`);
+
+            let decoded = MsgReq.decode(buffer);
+            console.log(`decoded = ${JSON.stringify(decoded)}`);
+        });
+
         this._webSocket = new WebSocket(url);
         var self = this
         this._webSocket.onopen = function name() {
             self._sendHeart();
-            if (data != null) {
-                data.seq = String(new Date().getTime());
-                self._webSocket.send(JSON.stringify(data));
-            }
         }
-      
+
         this._webSocket.onmessage = function (event) {
             // console.log("ws msg received:", event);
             if (event.data == heartPong) {

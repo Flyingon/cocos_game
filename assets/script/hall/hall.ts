@@ -1,6 +1,8 @@
 import { SetUserInfo, GetUserInfo } from "../util/user/userinfo";
+import { WsConn } from "../transport/websocket/conn";
+import { cfg } from "../cfg/cfg"
 
-const {ccclass, property} = cc._decorator;
+const { ccclass, property } = cc._decorator;
 
 @ccclass
 export default class NewClass extends cc.Component {
@@ -8,11 +10,12 @@ export default class NewClass extends cc.Component {
     @property(cc.Node)
     UserInfo: cc.Node = null;
 
-    onLoad () {
+    onLoad() {
         this._showUserInfo();
+        WsConn.NewConn(cfg.localvrWS);
     }
 
-    start () {
+    start() {
     }
 
     _showUserInfo() {
@@ -20,7 +23,7 @@ export default class NewClass extends cc.Component {
         console.log("show userinfo: ", userInfo);
         let name = userInfo.get("name");
         let avatarUrl = userInfo.get("avatar");
-    
+
         this.UserInfo.getChildByName("Name").getComponent(cc.Label).string = name;
         if (avatarUrl.length > 0) {
             var self = this;
