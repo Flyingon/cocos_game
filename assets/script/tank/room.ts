@@ -5,7 +5,7 @@ import { NewConnAndLogin } from "../session/connmgr"
 const { ccclass, property } = cc._decorator;
 
 @ccclass
-export default class NewClass extends cc.Component {
+export default class TankHall extends cc.Component {
 
     @property(cc.Node)
     UserInfo: cc.Node = null;
@@ -39,6 +39,6 @@ export default class NewClass extends cc.Component {
     }
 
     EnterTankGame() {
-        cc.director.loadScene('scene/tank');
+        cc.director.loadScene('scene/tank/tank');
     }
 }

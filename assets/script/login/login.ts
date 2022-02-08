@@ -36,7 +36,7 @@ export default class NewClass extends cc.Component {
         wxLogin(function sucess(userInfo: any) {
             console.log("login from wx success: ", userInfo);
             SetUserInfo({ "avatar": userInfo.avatarUrl, "name": userInfo.nickName })
-            cc.director.loadScene('scene/hall');
+            cc.director.loadScene('scene/tank/room');
         }, function failed() {
             console.log("login from wx failed");
         });
@@ -49,6 +49,6 @@ export default class NewClass extends cc.Component {
         }
         console.log("login from guest success: ", userInfo);
         SetUserInfo({ "avatar": userInfo.avatar, "name": userInfo.name })
-        cc.director.loadScene('scene/hall');
+        cc.director.loadScene('scene/tank/room');
     }
 }
