@@ -1,13 +1,16 @@
 syntax = "proto3";
 
 package game;
+
 option go_package = "./game";
 
 message HeadReq {
     uint64 uid = 1;
-    int64 cmd = 2;
-    string s_id = 3; //服务id
-    string i_id = 4; //实例id
+    string cmd = 2;
+    int32  type = 3; // 消息类型: 1. 返回客户端 2. 请求服务端
+    string s_id = 4; //服务id
+    string i_id = 5; //实例id
+    string seq = 6;  // 请求seq
 }
 
 message MsgReq {
@@ -18,7 +21,8 @@ message MsgReq {
 message HeadRsp {
     uint64 uid = 1;
     int64 cmd = 2;
-    int64 code = 4;
+    int64 code = 3;
+    string seq = 4;  // 请求seq
 }
 
 message MsgRsp {
