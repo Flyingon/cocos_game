@@ -4,28 +4,23 @@ package game;
 
 option go_package = "./game";
 
-message HeadReq {
-    uint64 uid = 1;
+message MsgHead {
+    string uid = 1;
     string cmd = 2;
-    int32  type = 3; // 消息类型: 1. 返回客户端 2. 请求服务端
-    string s_id = 4; //服务id
-    string i_id = 5; //实例id
-    string seq = 6;  // 请求seq
+    string seq = 3;  // 请求带上的seq
+
+    // 返回码
+    int32 code = 4;
+    string msg = 5;
+
+    // 路由信息
+    int32  type = 6; // 消息类型: 1. 返回客户端 2. 请求服务端
+    string s_id = 7; //服务id
+    string i_id = 8; //实例id
 }
 
-message MsgReq {
-    HeadReq head = 1;
-    bytes data = 2;
-}
-
-message HeadRsp {
-    uint64 uid = 1;
-    int64 cmd = 2;
-    int64 code = 3;
-    string seq = 4;  // 请求seq
-}
-
-message MsgRsp {
-    HeadRsp head = 1;
+// 消息
+message Msg {
+    MsgHead head = 1;
     bytes data = 2;
 }

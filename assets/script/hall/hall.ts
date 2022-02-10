@@ -1,6 +1,6 @@
 import { SetUserInfo, GetUserInfo } from "../util/user/userinfo";
-import { WsConn } from "../transport/websocket/conn";
-import { NewConnAndLogin } from "../session/connmgr"
+import { WsConn } from "../session/conn";
+import { login } from "../session/connmgr"
 
 const { ccclass, property } = cc._decorator;
 
@@ -12,7 +12,7 @@ export default class NewClass extends cc.Component {
 
     onLoad() {
         this._showUserInfo();
-        NewConnAndLogin();
+        login();
     }
 
     start() {
