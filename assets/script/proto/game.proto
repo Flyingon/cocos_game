@@ -4,6 +4,12 @@ package game;
 
 option go_package = "./game";
 
+enum MsgType {
+    MSG_TYPE_UNSPECIFIED = 0;
+    MSG_TYPE_CLIENT = 1;
+    MSG_TYPE_SVR = 2;
+}
+
 message MsgHead {
     string uid = 1;
     string cmd = 2;
@@ -14,9 +20,10 @@ message MsgHead {
     string msg = 5;
 
     // 路由信息
-    int32  type = 6; // 消息类型: 1. 返回客户端 2. 请求服务端
+    MsgType  type = 6; // 消息类型: 1. 返回客户端 2. 请求服务端
     string s_id = 7; //服务id
     string i_id = 8; //实例id
+    string c_id = 9; //客户端id
 }
 
 // 消息

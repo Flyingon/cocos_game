@@ -18,6 +18,22 @@ $root.game = (function() {
      */
     var game = {};
 
+    /**
+     * MsgType enum.
+     * @name game.MsgType
+     * @enum {number}
+     * @property {number} MSG_TYPE_UNSPECIFIED=0 MSG_TYPE_UNSPECIFIED value
+     * @property {number} MSG_TYPE_CLIENT=1 MSG_TYPE_CLIENT value
+     * @property {number} MSG_TYPE_SVR=2 MSG_TYPE_SVR value
+     */
+    game.MsgType = (function() {
+        var valuesById = {}, values = Object.create(valuesById);
+        values[valuesById[0] = "MSG_TYPE_UNSPECIFIED"] = 0;
+        values[valuesById[1] = "MSG_TYPE_CLIENT"] = 1;
+        values[valuesById[2] = "MSG_TYPE_SVR"] = 2;
+        return values;
+    })();
+
     game.MsgHead = (function() {
 
         /**
@@ -29,9 +45,10 @@ $root.game = (function() {
          * @property {string|null} [seq] MsgHead seq
          * @property {number|null} [code] MsgHead code
          * @property {string|null} [msg] MsgHead msg
-         * @property {number|null} [type] MsgHead type
+         * @property {game.MsgType|null} [type] MsgHead type
          * @property {string|null} [sId] MsgHead sId
          * @property {string|null} [iId] MsgHead iId
+         * @property {string|null} [cId] MsgHead cId
          */
 
         /**
@@ -91,7 +108,7 @@ $root.game = (function() {
 
         /**
          * MsgHead type.
-         * @member {number} type
+         * @member {game.MsgType} type
          * @memberof game.MsgHead
          * @instance
          */
@@ -112,6 +129,14 @@ $root.game = (function() {
          * @instance
          */
         MsgHead.prototype.iId = "";
+
+        /**
+         * MsgHead cId.
+         * @member {string} cId
+         * @memberof game.MsgHead
+         * @instance
+         */
+        MsgHead.prototype.cId = "";
 
         /**
          * Creates a new MsgHead instance using the specified properties.
@@ -153,6 +178,8 @@ $root.game = (function() {
                 writer.uint32(/* id 7, wireType 2 =*/58).string(message.sId);
             if (message.iId != null && Object.hasOwnProperty.call(message, "iId"))
                 writer.uint32(/* id 8, wireType 2 =*/66).string(message.iId);
+            if (message.cId != null && Object.hasOwnProperty.call(message, "cId"))
+                writer.uint32(/* id 9, wireType 2 =*/74).string(message.cId);
             return writer;
         };
 
@@ -211,6 +238,9 @@ $root.game = (function() {
                 case 8:
                     message.iId = reader.string();
                     break;
+                case 9:
+                    message.cId = reader.string();
+                    break;
                 default:
                     reader.skipType(tag & 7);
                     break;
@@ -262,14 +292,23 @@ $root.game = (function() {
                 if (!$util.isString(message.msg))
                     return "msg: string expected";
             if (message.type != null && message.hasOwnProperty("type"))
-                if (!$util.isInteger(message.type))
-                    return "type: integer expected";
+                switch (message.type) {
+                default:
+                    return "type: enum value expected";
+                case 0:
+                case 1:
+                case 2:
+                    break;
+                }
             if (message.sId != null && message.hasOwnProperty("sId"))
                 if (!$util.isString(message.sId))
                     return "sId: string expected";
             if (message.iId != null && message.hasOwnProperty("iId"))
                 if (!$util.isString(message.iId))
                     return "iId: string expected";
+            if (message.cId != null && message.hasOwnProperty("cId"))
+                if (!$util.isString(message.cId))
+                    return "cId: string expected";
             return null;
         };
 
@@ -295,12 +334,26 @@ $root.game = (function() {
                 message.code = object.code | 0;
             if (object.msg != null)
                 message.msg = String(object.msg);
-            if (object.type != null)
-                message.type = object.type | 0;
+            switch (object.type) {
+            case "MSG_TYPE_UNSPECIFIED":
+            case 0:
+                message.type = 0;
+                break;
+            case "MSG_TYPE_CLIENT":
+            case 1:
+                message.type = 1;
+                break;
+            case "MSG_TYPE_SVR":
+            case 2:
+                message.type = 2;
+                break;
+            }
             if (object.sId != null)
                 message.sId = String(object.sId);
             if (object.iId != null)
                 message.iId = String(object.iId);
+            if (object.cId != null)
+                message.cId = String(object.cId);
             return message;
         };
 
@@ -323,9 +376,10 @@ $root.game = (function() {
                 object.seq = "";
                 object.code = 0;
                 object.msg = "";
-                object.type = 0;
+                object.type = options.enums === String ? "MSG_TYPE_UNSPECIFIED" : 0;
                 object.sId = "";
                 object.iId = "";
+                object.cId = "";
             }
             if (message.uid != null && message.hasOwnProperty("uid"))
                 object.uid = message.uid;
@@ -338,11 +392,13 @@ $root.game = (function() {
             if (message.msg != null && message.hasOwnProperty("msg"))
                 object.msg = message.msg;
             if (message.type != null && message.hasOwnProperty("type"))
-                object.type = message.type;
+                object.type = options.enums === String ? $root.game.MsgType[message.type] : message.type;
             if (message.sId != null && message.hasOwnProperty("sId"))
                 object.sId = message.sId;
             if (message.iId != null && message.hasOwnProperty("iId"))
                 object.iId = message.iId;
+            if (message.cId != null && message.hasOwnProperty("cId"))
+                object.cId = message.cId;
             return object;
         };
 
