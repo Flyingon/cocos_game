@@ -1,6 +1,6 @@
 
 import { wxLogin } from '../login/wxlogin'
-import { SetUserInfo } from '../util/user/userinfo';
+import { setUserInfo } from '../util/user/userinfo';
 
 const { ccclass, property } = cc._decorator;
 
@@ -35,7 +35,7 @@ export default class NewClass extends cc.Component {
         */
         wxLogin(function sucess(userInfo: any) {
             console.log("login from wx success: ", userInfo);
-            SetUserInfo({ "avatar": userInfo.avatarUrl, "name": userInfo.nickName })
+            setUserInfo({ "avatar": userInfo.avatarUrl, "name": userInfo.nickName })
             cc.director.loadScene('scene/tank/room');
         }, function failed() {
             console.log("login from wx failed");
@@ -48,7 +48,7 @@ export default class NewClass extends cc.Component {
             "name": "袁兆祎" 
         }
         console.log("login from guest success: ", userInfo);
-        SetUserInfo({ "avatar": userInfo.avatar, "name": userInfo.name })
+        setUserInfo({ "avatar": userInfo.avatar, "name": userInfo.name })
         cc.director.loadScene('scene/tank/room');
     }
 }

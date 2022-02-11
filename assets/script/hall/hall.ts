@@ -1,5 +1,4 @@
-import { SetUserInfo, GetUserInfo } from "../util/user/userinfo";
-import { WsConn } from "../session/conn";
+import { setUserInfo, getUserInfo } from "../util/user/userinfo";
 import { login } from "../session/connmgr"
 
 const { ccclass, property } = cc._decorator;
@@ -19,7 +18,7 @@ export default class NewClass extends cc.Component {
     }
 
     _showUserInfo() {
-        let userInfo = GetUserInfo();
+        let userInfo = getUserInfo();
         // console.log("show userinfo: ", userInfo);
         let name = userInfo.get("name");
         let avatarUrl = userInfo.get("avatar");

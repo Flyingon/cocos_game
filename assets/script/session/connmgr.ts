@@ -1,31 +1,50 @@
 
 import { wsConn } from "./conn";
-import { getHandler } from "./handler";
+import { getHandler, registerHandler } from "./handler";
+import { getUserInfo } from "../util/user/userinfo";
 import { game } from "../proto/compiled";
 import { cfg } from "../cfg/cfg"
 
 function _getHead(uid: string, cmd: string) {
-    return game.MsgHead.create({ uid: uid, cmd: cmd, type: 2, sId: "game", iId: "192.168.255.10" })
+    return game.MsgHead.create({
+        uid: uid,
+        cmd: cmd,
+        type: 2,
+        sId: "game",
+        iId: "192.168.255.10",
+        seq: String(new Date().getTime())
+    })
 }
 
+const cmdLogin = "login"
+
+registerHandler(cmdLogin, this, loginCb);
+var bufAfterLogin: any = null;
+
 // login 新建链接并登陆
-export function login(dataAfterLogin: any) {
-    let headReq = _getHead("1", "login");
+export function login() {
+    let uid = getUserInfo().get("name");
+    let headReq = _getHead(uid, "login");
     let dataJson = JSON.stringify({});
     let message = game.Msg.create({ head: headReq, data: stringToBuffer(dataJson) });
     console.log(`message = ${JSON.stringify(message)}`);
     let loginBuf = game.Msg.encode(message).finish();
     // console.log(`loginBuf = ${Array.prototype.toString.call(loginBuf)}`);
-    let bufList = [loginBuf];
-    if (dataAfterLogin != null) {
-        bufList.push(dataAfterLogin)
+    wsConn.newConn(cfg.localvrWS, loginBuf);
+}
+// loginCb 登陆回调
+function loginCb() {
+    console.log("login success");
+    if (bufAfterLogin != null) {
+        wsConn.sendOnly(bufAfterLogin);
+        bufAfterLogin = null;
     }
-    wsConn.newConn(cfg.localvrWS, bufList);
 }
 
 // SendData 发送消息
 export function sendData(cmd: string, data: any) {
-    let headReq = _getHead("1", cmd)
+    let uid = getUserInfo().get("name");
+    let headReq = _getHead(uid, cmd)
     let dataJson = JSON.stringify(data);
     let message = game.Msg.create({ head: headReq, data: stringToBuffer(dataJson) });
     console.log(`message = ${JSON.stringify(message)}`);
@@ -34,7 +53,8 @@ export function sendData(cmd: string, data: any) {
     // console.log("buffer msg: ", buffer);
 
     if (wsConn.state() !== WebSocket.OPEN) {
-        login(buffer);
+        bufAfterLogin = buffer;
+        login();
         return;
     }
     wsConn.sendOnly(buffer);
@@ -46,7 +66,7 @@ export function msgHandler(msgBuffer: any) {
     // console.log(`buffer = ${Array.prototype.toString.call(msgBuffer)}`);
     let decoded = game.Msg.decode(msgBuffer);
     // game.Msg.bind
-    console.log(`decoded = ${JSON.stringify(decoded)}`);
+    // console.log(`decoded = ${JSON.stringify(decoded)}`);
     let head = decoded.head;
     if (head.code !== 0) {
         console.error("msg.code is failed: ", decoded.head)

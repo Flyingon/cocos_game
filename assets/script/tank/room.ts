@@ -1,4 +1,4 @@
-import { SetUserInfo, GetUserInfo } from "../util/user/userinfo";
+import { setUserInfo, getUserInfo } from "../util/user/userinfo";
 import { login, sendData } from "../session/connmgr";
 import { registerHandler } from "../session/handler";
 
@@ -20,14 +20,14 @@ export default class TankHall extends cc.Component {
         registerHandler(cmdCreateRoom, this, this.createRoomCb);
         registerHandler(cmdJoinRoom, this, this.joinRoomCb);
         this._showUserInfo();
-        login([]);
+        login();
     }
 
     start() {
     }
 
     _showUserInfo() {
-        let userInfo = GetUserInfo();
+        let userInfo = getUserInfo();
         // console.log("show userinfo: ", userInfo);
         let name = userInfo.get("name");
         let avatarUrl = userInfo.get("avatar");
@@ -77,7 +77,7 @@ export default class TankHall extends cc.Component {
     // 加入房间返回
     joinRoomCb(cls: any, msg: any) {
         console.log("cmd[" + cmdJoinRoom + "].rsp: ", msg)
-        SetUserInfo({ "room_info": msg.data });
+        setUserInfo({ "room_info": msg.data });
         cc.director.loadScene('scene/tank/tank');
     }
 }

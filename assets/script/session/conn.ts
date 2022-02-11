@@ -16,16 +16,12 @@ class CWsConn {
         return this._webSocket.readyState
     }
 
-    newConn(url: string, dataList: any[]) {
+    newConn(url: string, data: any) {
         this._webSocket = new WebSocket(url);
         var self = this
         this._webSocket.onopen = function name() {
             self._sendHeart();
-            if (dataList != null) {
-                for (var i = 0; i < dataList.length; i++) {
-                    self._webSocket.send(dataList[i]);
-                }
-            }
+            self._webSocket.send(data);
         }
         this._webSocket.onmessage = function (event) {
             if (event.data == heartPong) {
