@@ -1,3 +1,6 @@
+import { sendData } from "../session/connmgr";
+
+const cmdMove = "move"
 
 const {ccclass, property} = cc._decorator;
 
@@ -53,23 +56,36 @@ export default class BallCtrl extends cc.Component {
         let degree: number = r * 180 / Math.PI; 
         degree = degree - 180 ;
         this.node.angle = degree;
+        sendData(cmdMove, {
+            "x": this.node.x,
+            "y": this.node.y,
+            "d": this.node.angle,
+        })
+        console.log("tank to [mine]: ", this.node.x, this.node.y, this.node.angle);
     }
 
-    onBeginContact (selfCollider: any, otherCollider: any, contact: any | null) {
+    onBeginContact (contact: any, selfCollider: any, otherCollider: any | null) {
         // 只在两个碰撞体开始接触时被调用一次
-        console.log('onBeginContact', typeof(selfCollider), typeof(contact));
+        console.log('onBeginContact');
     }
 
-    onEndContact (selfCollider: any, otherCollider: any, contact: any | null) {
+    onEndContact (contact: any, selfCollider: any, otherCollider: any | null) {
         // 只在两个碰撞体结束接触时被调用一次
         console.log('onEndContact');
     }
-    onPreSolve (selfCollider: any, otherCollider: any, contact: any | null) {
+    onPreSolve (contact: any, selfCollider: any, otherCollider: any | null) {
         // 每次将要处理碰撞体接触逻辑时被调用
         console.log('onPreSolve');
     }
-    onPostSolve (selfCollider: any, otherCollider: any, contact: any | null) {
+    onPostSolve (contact: any, selfCollider: any, otherCollider: any | null) {
         // 每次处理完碰撞体接触逻辑时被调用
         console.log('onPostSolve');
+        // console.log('onPostSolve',
+        // "selfCollider: ", selfCollider, 
+        // "otherCollider: ", otherCollider,
+        // "contact: ", contact,
+        // );
+        selfCollider.getComponent(cc.RigidBody).linearVelocity = cc.v2(0,0);
+        otherCollider.getComponent(cc.RigidBody).linearVelocity = cc.v2(0,0);
     }
 }

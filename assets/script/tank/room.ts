@@ -71,8 +71,11 @@ export default class TankHall extends cc.Component {
     }
 
     // 加入房间
-    joinRoom(roomId:string) {
-        sendData(cmdJoinRoom, { "room_id": roomId });
+    joinRoom(roomId: string) {
+        let userInfo = getUserInfo();
+        let name = userInfo.get("name");
+        let avatarUrl = userInfo.get("avatar");
+        sendData(cmdJoinRoom, { "rid": roomId, "name": name, "avatar": avatarUrl });
     }
     // 加入房间返回
     joinRoomCb(cls: any, msg: any) {

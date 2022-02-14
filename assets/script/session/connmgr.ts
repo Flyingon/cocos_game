@@ -25,8 +25,9 @@ var bufAfterLogin: any = null;
 export function login() {
     let uid = getUserInfo().get("name");
     let headReq = _getHead(uid, "login");
-    let dataJson = JSON.stringify({});
-    let message = game.Msg.create({ head: headReq, data: stringToBuffer(dataJson) });
+    // let dataJson = JSON.stringify({});
+    let dataBuf = dataToBuffer({});
+    let message = game.Msg.create({ head: headReq, data: dataBuf });
     console.log(`message = ${JSON.stringify(message)}`);
     let loginBuf = game.Msg.encode(message).finish();
     // console.log(`loginBuf = ${Array.prototype.toString.call(loginBuf)}`);
@@ -45,8 +46,10 @@ function loginCb() {
 export function sendData(cmd: string, data: any) {
     let uid = getUserInfo().get("name");
     let headReq = _getHead(uid, cmd)
-    let dataJson = JSON.stringify(data);
-    let message = game.Msg.create({ head: headReq, data: stringToBuffer(dataJson) });
+    // let dataJson = JSON.stringify(data);
+    // console.log(`dataJson = ${dataJson}`);
+    let dataBuf = dataToBuffer(data);
+    let message = game.Msg.create({ head: headReq, data:  dataBuf});
     console.log(`message = ${JSON.stringify(message)}`);
     let buffer = game.Msg.encode(message).finish();
     // console.log(`buffer = ${Array.prototype.toString.call(buffer)}`);
@@ -72,26 +75,30 @@ export function msgHandler(msgBuffer: any) {
         console.error("msg.code is failed: ", decoded.head)
         return  // 失败消息不处理
     }
-    let msgData = bufferToString(decoded.data);
-    console.log("data: ", msgData);
+    let msgData = bufferToData(decoded.data);
+    // console.log("data: ", msgData);
 
     let funcName = head.cmd;
     console.log("func: <", funcName, ">");
-    console.log("reqMsg:", msgData);
+    console.log("msg:", msgData);
     let handFunc = getHandler(funcName).func;
     let clsIns = getHandler(funcName).cls
     let rspMsg = handFunc(clsIns, msgData);
-    console.log("rspMsg:", rspMsg);
+    console.log("res:", rspMsg);
 }
 
-function bufferToString(buffer: Uint8Array): string {
-    return String.fromCharCode.apply(null, Array.from(new Uint8Array(buffer)));
+function bufferToData(buffer: Uint8Array): any {
+    let dataJson = new TextDecoder("utf-8").decode(buffer);
+    return JSON.parse(dataJson);
+    // return String.fromCharCode.apply(null, Array.from(new Uint8Array(buffer)));
 }
 
-function stringToBuffer(value: string): Uint8Array {
-    let buffer = new Uint8Array(value.length);
-    for (let i = 0, length = value.length; i < length; i++) {
-        buffer[i] = value.charCodeAt(i);
-    }
-    return buffer;
+function dataToBuffer(value: any): Uint8Array {
+    let dataBuf = new TextEncoder("utf-8").encode(JSON.stringify(value));
+    return dataBuf;
+    // let buffer = new Uint8Array(value.length);
+    // for (let i = 0, length = value.length; i < length; i++) {
+    //     buffer[i] = value.charCodeAt(i);
+    // }
+    // return buffer;
 }

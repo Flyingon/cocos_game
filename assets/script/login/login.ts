@@ -45,8 +45,9 @@ export default class NewClass extends cc.Component {
     loginFromGuest(params: any) {
         let userInfo = {
             "avatar": "https://thirdwx.qlogo.cn/mmopen/vi_32/GN8sA5AThzrvobA4UD8PTpqFJ7cBfcSVfMZWaDALj4yibQ0OWefmR2JoggLR51u8WY6QLBDEboEgib90hMy17wEQ/132",
-            "name": "袁兆祎" 
+            "name": "游客-" 
         }
+        userInfo.name = userInfo.name + String(new Date().getTime());
         console.log("login from guest success: ", userInfo);
         setUserInfo({ "avatar": userInfo.avatar, "name": userInfo.name })
         cc.director.loadScene('scene/tank/room');
