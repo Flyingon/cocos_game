@@ -1,6 +1,7 @@
 
 import { wxLogin } from '../login/wxlogin'
 import { setUserInfo } from '../util/user/userinfo';
+import { login } from '../session/connmgr';
 
 const { ccclass, property } = cc._decorator;
 
@@ -34,9 +35,9 @@ export default class NewClass extends cc.Component {
         province: ""
         */
         wxLogin(function sucess(userInfo: any) {
-            console.log("login from wx success: ", userInfo);
+            console.log("login from wx: ", userInfo);
             setUserInfo({ "avatar": userInfo.avatarUrl, "name": userInfo.nickName })
-            cc.director.loadScene('scene/tank/room');
+            login();
         }, function failed() {
             console.log("login from wx failed");
         });
@@ -45,11 +46,11 @@ export default class NewClass extends cc.Component {
     loginFromGuest(params: any) {
         let userInfo = {
             "avatar": "https://thirdwx.qlogo.cn/mmopen/vi_32/GN8sA5AThzrvobA4UD8PTpqFJ7cBfcSVfMZWaDALj4yibQ0OWefmR2JoggLR51u8WY6QLBDEboEgib90hMy17wEQ/132",
-            "name": "游客-" 
+            "name": "游客-"
         }
         userInfo.name = userInfo.name + String(new Date().getTime());
-        console.log("login from guest success: ", userInfo);
-        setUserInfo({ "avatar": userInfo.avatar, "name": userInfo.name })
-        cc.director.loadScene('scene/tank/room');
+        console.log("login from guest: ", userInfo);
+        setUserInfo({ "avatar": userInfo.avatar, "name": userInfo.name });
+        login();
     }
 }

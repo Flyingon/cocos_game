@@ -2,6 +2,7 @@
 var _handlerMap = new Map();
 
 export function registerHandler(name: string, cls: any, func: any) {
+    console.log("registerHandler: ", name)
     _handlerMap.set(name, {
         "cls": cls,
         "func": func,

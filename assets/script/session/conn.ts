@@ -30,7 +30,7 @@ class CWsConn {
             }
             // console.log("ws msg received:", event.type, event.data, typeof (event.data));
             if (event.data instanceof Blob) {
-                let arrayBuffer;
+                let arrayBuffer:any;
                 let fileReader = new FileReader();
                 fileReader.onload = function (event) {
                     arrayBuffer = event.target.result;

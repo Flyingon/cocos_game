@@ -1,11 +1,12 @@
 import { setUserInfo, getUserInfo } from "../util/user/userinfo";
-import { login, sendData } from "../session/connmgr";
+import { login, sendData, setSvrID } from "../session/connmgr";
 import { registerHandler } from "../session/handler";
 
 const { ccclass, property } = cc._decorator;
 
 const cmdCreateRoom = "create_room";
 const cmdJoinRoom = "join_room";
+const cmdGetRoom = "get_room";
 
 @ccclass
 export default class TankHall extends cc.Component {
@@ -19,8 +20,8 @@ export default class TankHall extends cc.Component {
     onLoad() {
         registerHandler(cmdCreateRoom, this, this.createRoomCb);
         registerHandler(cmdJoinRoom, this, this.joinRoomCb);
+        registerHandler(cmdGetRoom, this, this.getRoomCb);
         this._showUserInfo();
-        login();
     }
 
     start() {
@@ -61,6 +62,10 @@ export default class TankHall extends cc.Component {
 
     }
 
+    // 加入房间
+    joinRoom(roomId: string) {
+        this.getRoomReq(roomId);
+    }
     // 创建房间
     createRoom() {
         sendData(cmdCreateRoom, { "a": "a" });
@@ -69,9 +74,30 @@ export default class TankHall extends cc.Component {
     createRoomCb(cls: any, msg: any) {
         console.log("cmd[" + cmdCreateRoom + "].rsp: ", msg)
     }
-
-    // 加入房间
-    joinRoom(roomId: string) {
+    // 查询房间信息发起请求
+    getRoomReq(roomId: string) {
+        let userInfo = getUserInfo();
+        let name = userInfo.get("name");
+        let avatarUrl = userInfo.get("avatar");
+        sendData(cmdGetRoom, { "rid": roomId });
+    }
+    // 查询房间回调
+    getRoomCb(cls: any, msg: any) {
+        console.log("cmd[" + cmdGetRoom + "].rsp: ", msg);
+        let roomID = msg.rid;
+        let roomNum:number = msg.num;
+        if (roomNum >= 10) {
+            console.error("room[].num[] is exceed maximum" );
+            return;
+        };
+        let iID = msg.room_info.config.i_id;
+        if (iID != null) {
+            setSvrID("", iID);
+        };
+        cls.joinRoomReq(roomID);
+    }
+    // 加入房间请求发起
+    joinRoomReq(roomId: string) {
         let userInfo = getUserInfo();
         let name = userInfo.get("name");
         let avatarUrl = userInfo.get("avatar");
