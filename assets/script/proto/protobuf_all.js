@@ -1,3 +1,4 @@
+
 /*!
  * protobuf.js v6.10.0 (c) 2016, daniel wirtz
  * compiled wed, 15 jul 2020 23:34:15 utc
@@ -100,3 +101,5 @@ b);},UTF16toUTF8:function(a,c){for(var b,d=null;null!==(b=null!==d?d:a());)55296
 function(b){a.UTF8toUTF16(b,c)})},calculateCodePoint:function(a){return 128>a?1:2048>a?2:65536>a?3:4},calculateUTF8:function(a){for(var b,d=0;null!==(b=a());)d+=128>b?1:2048>b?2:65536>b?3:4;return d},calculateUTF16asUTF8:function(b){var c=0,d=0;a.UTF16toUTF8(b,function(a){++c;d+=128>a?1:2048>a?2:65536>a?3:4});return[c,d]}};return a}();d.toUTF8=function(a,b){"undefined"===typeof a&&(a=this.offset);"undefined"===typeof b&&(b=this.limit);if(!this.noAssert){if("number"!==typeof a||0!==a%1)throw TypeError("Illegal begin: Not an integer");
 a>>>=0;if("number"!==typeof b||0!==b%1)throw TypeError("Illegal end: Not an integer");b>>>=0;if(0>a||a>b||b>this.buffer.byteLength)throw RangeError("Illegal range: 0 <= "+a+" <= "+b+" <= "+this.buffer.byteLength);}var c;try{m.decodeUTF8toUTF16(function(){return a<b?this.view[a++]:null}.bind(this),c=t())}catch(e){if(a!==b)throw RangeError("Illegal range: Truncated data, "+a+" != "+b);}return c()};g.fromUTF8=function(a,b,c){if(!c&&"string"!==typeof a)throw TypeError("Illegal str: Not a string");var d=
 new g(m.calculateUTF16asUTF8(l(a),!0)[1],b,c),h=0;m.encodeUTF16toUTF8(l(a),function(a){d.view[h++]=a});d.limit=h;return d};return g});
+
+window.protobuf = protobuf;

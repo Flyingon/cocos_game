@@ -48,6 +48,9 @@ export function login() {
     // console.log(`message = ${JSON.stringify(message)}`);
     let loginBuf = game.Msg.encode(message).finish();
     // console.log(`loginBuf = ${Array.prototype.toString.call(loginBuf)}`);
+    if (window["wx"] != null) {  // *微信 将 Uint8Array 转换成 ArrayBuffer
+        loginBuf = loginBuf.slice().buffer
+    }
     wsConn.newConn(cfg.testSvrWS, loginBuf);
 }
 // loginCb 登陆回调
@@ -78,6 +81,9 @@ export function sendData(cmd: string, data: any) {
         login();
         return;
     }
+    if (window["wx"] != null) {  // *微信 将 Uint8Array 转换成 ArrayBuffer
+        buffer = buffer.slice().buffer
+    }
     wsConn.sendOnly(buffer);
 }
 
@@ -89,7 +95,6 @@ export function msgHandler(msgBuffer: any) {
     let decoded: any = game.Msg.decode(msgBuffer);
     // game.Msg.bind
     // console.log(`decoded = ${JSON.stringify(decoded)}`);
-
 
     let head = decoded.head;
     if (head.code !== 0) {
@@ -124,17 +129,22 @@ export function msgHandler(msgBuffer: any) {
 }
 
 function bufferToData(buffer: Uint8Array): any {
-    let dataJson = new TextDecoder("utf-8").decode(buffer);
+    let dataJson:string;
+    if (window['wx'] != null) {  // 微信小游戏
+        dataJson = decodeURIComponent(escape(String.fromCharCode(...buffer)));
+    } else {
+        dataJson = new TextDecoder("utf-8").decode(buffer);
+    }
     return JSON.parse(dataJson);
-    // return String.fromCharCode.apply(null, Array.from(new Uint8Array(buffer)));
 }
 
 function dataToBuffer(value: any): Uint8Array {
-    let dataBuf = new TextEncoder().encode(JSON.stringify(value));
+    let dataJson = JSON.stringify(value);
+    let dataBuf:Uint8Array;
+    if (window['wx'] != null) {  // 微信小游戏
+        dataBuf = new Uint8Array(unescape(encodeURIComponent(dataJson)).split("").map(val => val.charCodeAt()));
+    } else {
+        dataBuf = new TextEncoder().encode(dataJson);
+    }
     return dataBuf;
-    // let buffer = new Uint8Array(value.length);
-    // for (let i = 0, length = value.length; i < length; i++) {
-    //     buffer[i] = value.charCodeAt(i);
-    // }
-    // return buffer;
 }

@@ -10,9 +10,9 @@
     "upsideDown": false
   },
   "webOrientation": "auto",
-  "inlineSpriteFrames": true,
+  "inlineSpriteFrames": false,
   "inlineSpriteFrames_native": true,
-  "mainCompressionType": "default",
+  "mainCompressionType": "none",
   "mainIsRemote": true,
   "optimizeHotUpdate": false,
   "md5Cache": true,
@@ -51,5 +51,8 @@
     "recordPath": ""
   },
   "appBundle": false,
-  "agreements": {}
+  "agreements": {
+    "20200904180755": false,
+    "20200904180716": false
+  }
 }

@@ -4,5 +4,5 @@
   "separate_engine": false,
   "REMOTE_SERVER_ROOT": "https://res.yuanzhaoyi.cn/cocos_game",
   "subContext": "",
-  "startSceneAssetBundle": false
+  "startSceneAssetBundle": true
 }

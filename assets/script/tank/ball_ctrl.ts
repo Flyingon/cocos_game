@@ -31,7 +31,7 @@ export default class BallCtrl extends cc.Component {
         }
     }
 
-    update (dt:any) {
+    update (deltaTime: number) {
         // 主摄像机跟随
         if (this.camera !== null) {
             // this.camera.setPosition(this.node.getPosition());

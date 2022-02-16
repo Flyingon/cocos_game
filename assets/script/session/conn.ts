@@ -21,6 +21,7 @@ class CWsConn {
         var self = this
         this._webSocket.onopen = function name() {
             self._sendHeart();
+            // console.log("CCCCCC: ", data);
             self._webSocket.send(data);
         }
         this._webSocket.onmessage = function (event) {
@@ -29,7 +30,10 @@ class CWsConn {
                 return
             }
             // console.log("ws msg received:", event.type, event.data, typeof (event.data));
-            if (event.data instanceof Blob) {
+            if (window["wx"] != null) {  // 微信小游戏
+                let arr8 = new Uint8Array(event.data);
+                msgHandler(arr8);
+            } else if (event.data instanceof Blob) {  // web
                 let arrayBuffer:any;
                 let fileReader = new FileReader();
                 fileReader.onload = function (event) {
@@ -38,7 +42,7 @@ class CWsConn {
                     msgHandler(arr8);
                 };
                 fileReader.readAsArrayBuffer(event.data);
-            }
+            };
         };
 
         this._webSocket.onclose = function (event) {
