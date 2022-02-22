@@ -13,7 +13,7 @@ class GameClt {
     // syncFrameOnce 和后台帧同步且仅同步一次
     syncFrameOnce(svrFrame: number) {
         if (this.lastSyncTs > 0) {
-            this.cltFrame = svrFrame;
+            this.cltFrame = svrFrame - 30;
             this.lastSyncTs = new Date().getTime();
         } 
     }
@@ -30,7 +30,7 @@ class GameClt {
         this.cltFrame++;
         return this.cltFrame;
     }
-    
+
     setFrameList(f: number, data: any) {
         this.frameList[f] = data;
     }
