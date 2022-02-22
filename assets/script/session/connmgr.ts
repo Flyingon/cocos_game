@@ -3,7 +3,7 @@ import { wsConn } from "./conn";
 import { getHandler, registerHandler } from "./handler";
 import { getUserInfo } from "../util/user/userinfo";
 import { game } from "../proto/compiled";
-import { cfg } from "../cfg/cfg"
+import { defineIID, getWsAddr } from "../cfg/cfg"
 
 const cmdLogin = "login"
 
@@ -12,12 +12,15 @@ var bufAfterLogin: any = null;
 
 var svr = {
     sId: "tank",
-    iId: "",
+    iId: defineIID,
 }
 
 
 // 设置后台服务路由信息
 export function setSvrID(sid: string, iId: string) {
+    if (defineIID.length > 0) {  // 指定服务的实例id，不在重新设置
+        return
+    }
     if (sid != null && sid.length > 0) {
         svr.sId = sid;
     }
@@ -51,7 +54,7 @@ export function login() {
     if (window["wx"] != null) {  // *微信 将 Uint8Array 转换成 ArrayBuffer
         loginBuf = loginBuf.slice().buffer
     }
-    wsConn.newConn(cfg.testSvrWS, loginBuf);
+    wsConn.newConn(getWsAddr(), loginBuf);
 }
 // loginCb 登陆回调
 function loginCb(cls: any, msg: any) {
@@ -106,10 +109,10 @@ export function msgHandler(msgBuffer: any) {
     if (decoded.data.length > 0) {
         msgData = bufferToData(decoded.data);
     }
-    console.log(
-        "head", head,
-        "msg:", msgData
-    );
+    // console.log(
+    //     "head", head,
+    //     "msg:", msgData
+    // );
 
     if (head.sId == null ||
         head.iId == null) {
