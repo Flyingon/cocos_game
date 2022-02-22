@@ -82,7 +82,7 @@ export default class TankCtrl extends cc.Component {
         if (frameData != null) {
             // console.log("frame[" + frameNum + "].data: ");
             for (let uid in frameData) {
-                console.log("AAAA: ", frameNum, uid, frameData[uid]);
+                // console.log("AAAA: ", frameNum, uid, frameData[uid]);
                 if (getUserInfo().get("name") == uid ) {  // 自己的tank跳过
                     this.tankMove(this.node, this.body, frameData[uid].x, frameData[uid].y);
                 } else {
