@@ -1,5 +1,5 @@
 import { sendData } from "../session/connmgr";
-import { gameClt } from "./game";
+import { gameClt, frameInterval } from "./game";
 import { registerHandler } from "../session/handler";
 import { getUserInfo } from "../util/user/userinfo";
 
@@ -25,15 +25,16 @@ export default class TankCtrl extends cc.Component {
     @property
     speed: number = 200;
 
-    // @property(cc.Node)
+    @property(cc.Node)
     camera: cc.Node = null;
+
     private body: cc.RigidBody = null;
     private offset: cc.Vec2 = cc.v2(0, 0);
     // private frameNum : number = 0;
 
     @property(cc.Node)
     tankTpl: cc.Node = null;
-    private _tankList: Map<string, TankObj> = new Map(); 
+    private _tankList: Map<string, TankObj> = new Map();
 
     onLoad() {
         registerHandler(cmdM1, this, this.moveCb);
@@ -49,48 +50,57 @@ export default class TankCtrl extends cc.Component {
 
     update(deltaTime: number) {
         let curFrame = gameClt.incrCltFrame(1);
-        this.frameHandler(curFrame);
+        gameClt.adjustSpeed();
+        this.frameHandler();
+
         // 主摄像机跟随
         if (this.camera !== null) {
-            // this.camera.setPosition(this.node.getPosition());
+            this.camera.setPosition(this.node.getPosition());
             this.camera.x = this.node.x + this.offset.x;
             this.camera.y = this.node.y + this.offset.y;
         }
         // tank响应操作
         // this.tankMove(this.node, this.body, this.stick.dir.x, this.stick.dir.y);
-    
+
         // 数据同步给后台
         if (cmdMove === "move") {
             sendData(cmdMove, {
                 "x": this.node.x,
                 "y": this.node.y,
                 "d": this.node.angle,
-                "f": gameClt.getCltFrame(),
-            });
-        } else if (cmdMove === "m2") {
-            sendData(cmdMove, {
-                "x": this.stick.dir.x,
-                "y": this.stick.dir.y,
             });
         }
+        // } else if (cmdMove === "m2") {
+        //     sendData(cmdMove, {
+        //         "x": this.stick.dir.x,
+        //         "y": this.stick.dir.y,
+        //     });
+        // }
 
         // console.log("tank to [mine]: ", this.node.x, this.node.y, this.node.angle);
     }
 
-    frameHandler(frameNum:number) {
-        let frameData = gameClt.getFrameList(frameNum);
-        if (frameData != null) {
-            // console.log("frame[" + frameNum + "].data: ");
-            for (let uid in frameData) {
-                if (frameData[uid].x > 0 || frameData[uid].y > 0) {
-                    console.log("AAAA: ", frameNum, uid, frameData[uid]);
+    // 处理每帧
+    frameHandler() {
+        let frames = gameClt.getNextFrames();
+        // console.log("cltFrame: ", gameClt.getCltFrameNum(), 
+        // "gameFrame: ", gameClt.getSvrFrameNum(), 
+        // "playFrame: ", gameClt.getSvrFrameNum(), 
+        //  "frames: ", frames);
+        for (let i in frames) {
+            let frame = frames[i];
+            if (frame != null && frame.data != null) {
+                let frameData = frame.data;
+                for (let uid in frameData) {
+                    // if (frameData[uid].x > 0 || frameData[uid].y > 0) {
+                    //     console.log("AAAA: ", cltFrameNum, uid, frameData[uid]);
+                    // }
+                    if (getUserInfo().get("name") == uid) {  // 自己的tank移动
+                        this.tankMove(this.node, this.body, frameData[uid].x, frameData[uid].y);
+                    } else {
+                        this._syncTankAction(uid, frameData[uid].x, frameData[uid].y);
+                    }
                 }
-                if (getUserInfo().get("name") == uid ) {  // 自己的tank跳过
-                    this.tankMove(this.node, this.body, frameData[uid].x, frameData[uid].y);
-                } else {
-                    this._syncTankAction(uid, frameData[uid].x, frameData[uid].y);
-                }
-
             }
         }
     }
@@ -157,9 +167,12 @@ export default class TankCtrl extends cc.Component {
     move2Cb(cls: any, msg: any) {
         // console.log("cmd[" + cmdM2 + "].msg: ", msg);
         let frames = msg.frame_list;
-        let curFrame:number = msg.cur_frame;
-        gameClt.syncFrameOnce(curFrame);
+        let curFrame: number = msg.cur_frame;
+        gameClt.syncFrameOnce(curFrame);  // 初始化帧数
+        gameClt.setSvrFrame(curFrame);  // 同步服务器当前帧数
+        gameClt.setFrameList(curFrame, {})
         for (let f in frames) {
+            // console.log("[setFrameList]: ", f, frames[f]);
             gameClt.setFrameList(Number(f), frames[f])
         }
     }

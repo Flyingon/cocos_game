@@ -5,8 +5,8 @@ var cfg = {
     prodSvrWS: "",
 }
 
-export const defineIID = "127.0.0.1" // "119.29.207.141" // "127.0.0.1"
+export const defineIID = "119.29.207.141" // "119.29.207.141" // "127.0.0.1"
 
 export function getWsAddr() {
-    return cfg.localvrWS
+    return cfg.testSvrWS
 }

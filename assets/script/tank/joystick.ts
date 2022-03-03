@@ -1,4 +1,10 @@
 
+import { sendData } from "../session/connmgr";
+import { gameClt } from "./game";
+import { registerHandler } from "../session/handler";
+import { getUserInfo } from "../util/user/userinfo";
+
+const cmdM2 = "m2"
 const { ccclass, property } = cc._decorator;
 
 @ccclass
@@ -40,11 +46,21 @@ export default class JoyStick extends cc.Component {
             pos.y = pos.y * this.maxR / len;
         }
         this.stick.setPosition(pos);
+
+        sendData(cmdM2, {
+                "x": this.dir.x,
+                "y": this.dir.y,
+            });
     }
 
     _onStickEnd(e: cc.Touch): void {
-        // console.log("touch end");
+        console.log("touch end");
         this.dir = cc.v2(0, 0);
         this.stick.setPosition(cc.v2(0, 0));
+
+        sendData(cmdM2, {
+            "x": 0,
+            "y": 0,
+        });
     }
 }
